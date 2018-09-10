@@ -1,0 +1,48 @@
+Project GetSit(rep)
+
+Searching for a way to automatically pull the daily, site-by-site, Situational Fire Incident Report data...whatever we can get about it.
+
+So there are several ways to access the full dataset through the Integrated Reporting of Wildland-Fire Information (IRWIN) service. 
+	1) Through a local ArcGIS application
+	2) Through an ArcGIS webmap
+	3) Through a custom application using the REST API. 
+
+It seems as though it would more efficient to use option three. This requires a few things, learning about them now...
+
+	I am creating a folder just for the REST API. So far I have an install file for Postman, which is a sort of hub for managing APIs and handling requests. I apparently already had an account. There are enterprise versions of this service that Earth Lab could probably create. I am just following the instruction in the pdf document on using IRWIN services, here. Okay, steps to getting the SitRep data. For getting access tokens use this: "https://developers.arcgis.com/labs/rest/get-an-access-token/"
+
+1) Get postman and install platform. 
+2) Sign in to ArcGIS Developer to initiate an application.
+	- My login is TravisWilliams
+	- Client ID: bRGXrmWbZfR8KxnC
+	- Client Secret: 91c0394d63d449d3bc08a3776fce0e36
+	- Temporary Token: -cpBPLgX6Yu_KUpIwV6E-EGGR7_qI1HUDaiKBpYbf1qe8fN0NwqllKKeaIBvdkSzPnVOhnkpDLdb4IO68EQKXeOgF8shaHBmFv6EmpeI77dDtNNRibeTrEXraJtR6ejFkcVJ3BbnTooM9J8Zp63vGg..
+
+3) Generate token. Open Postman click "+" for new request. Change HTTP method to POST and use "https://www.arcgis.com/sharing/rest/oauth2/token" as the URL. Also, change the authorization type to OAuth 2.0. ( I think this step is necessary, it was inferred, we'll see)
+
+4) In the Body of the request enter these keys and values:
+	- client_credentials: <client id>
+	- client_secret: <client secret>
+	- grant_type: client_credentials
+
+5) You will receive a dictionary with a temporary access token and an expiration time of 7200 seconds (2 hours). This scan be changed to up to two weeks apparently. That would make automation difficult, let's keep this step in mind. The dictionary comes in a variety of formats, use the JSON format and it looks like this: 
+
+{
+   
+	 "access_token": "vd33Qo_tqpeJ8xU8Hr1kdaWc5CnVUHzXrjBgNGCm1otpamaWSlBgSPB6PeXp9Nr5xP0QaZ55xlDXcBCDMdDtfYf0mEXbPWS7OAU-rynMeVAop2x0C2JWl0cpUPTBPvjQ5-ZAdt0AiBHw-JBazaUrRw..",
+    
+	"expires_in": 7200
+
+}
+
+This can also be done programmatically, there is a script with my credentials in "scripts\access.py"
+
+Okay, great. Now, we need to send an actual request through the endpoint?. This is where the instructions have gaps for novices like me...this will take some research. So, I am close, need to figure out how to format the authentification in the request once I have it, next time!
+
+8/17/2018
+
+Now, I am getting error 403, 
+
+{"error":{"code":403,"message":"You do not have permissions to access this resource or perform this operation.","messageCode":"GWM_0003","details":["You do not have permissions to access this resource or perform this operation."]}}
+
+At least the token is valid. What do I need?
